@@ -1,5 +1,5 @@
 // Setup empty JS object to act as endpoint for all routes
-projectData = [];
+projectData = {};
 
 // Require Express to run server and routes
 const express = require('express');
@@ -30,23 +30,19 @@ const listening = () => {
 const server = app.listen(port, listening);
 
 // get route
-const allData = (req, res) => {
-  res.send(projectData);
-  projectData = [];
-};
 
-app.get('/all', allData);
+app.get('/all', (req, res) => {
+  res.send(projectData);
+});
 
 // post route
-
-const postData = (req, res) => {
-  console.log(req.body);
-  newEntry = {
-    data: req.body.data,
-    temp: req.body.temp,
-    content: req.body.content
-  };
-  projectData.push(newEntry);
-};
-
-app.post('/add', postData);
+// /add
+app.post('/data', (req, res) => {
+  // should post date, temp and content
+  projectData.date = req.body.date;
+  projectData.temp = req.body.temp;
+  projectData.content = req.body.content;
+  res.send({ msg: 'data posted successfully' });
+  // because res.send("data posted..") led to an error (Error! SyntaxError: Unexpected token d in JSON at position 0)
+  console.log('server ', projectData);
+});
