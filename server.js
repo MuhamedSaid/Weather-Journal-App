@@ -36,13 +36,12 @@ app.get('/all', (req, res) => {
 });
 
 // post route
-// /add
-app.post('/data', (req, res) => {
-  // should post date, temp and content
+
+const postData = (req, res) => {
+  console.log(req.body);
   projectData.date = req.body.date;
   projectData.temp = req.body.temp;
   projectData.content = req.body.content;
-  res.send({ msg: 'data posted successfully' });
-  // because res.send("data posted..") led to an error (Error! SyntaxError: Unexpected token d in JSON at position 0)
-  console.log('server ', projectData);
-});
+};
+
+app.post('/data', postData);
