@@ -8,28 +8,30 @@ let newDate =
 // API Key
 // my key:   2dc371dd36fa288cdb6e4d58800e89fd
 
-let baseURL = 'http://api.openweathermap.org/data/2.5/forecast?zip=';
-let apiKey = '&appid=2dc371dd36fa288cdb6e4d58800e89fd';
+let baseURL = 'https://api.openweathermap.org/data/2.5/weather?zip=';
+const apiKey = '&appid=2dc371dd36fa288cdb6e4d58800e89fd&units=metric';
 
 document.getElementById('generate').addEventListener('click', generate);
 
 function generate(evt) {
   const zipCode = document.getElementById('zip').value;
   const feelings = document.getElementById('feelings').value;
-  getWeatherInfo(baseURL, zipCode, apiKey).then(function (data) {
-    console.log(data);
-    postData('/add', {
-      date: newDate,
-      temp: data.list[0].main.temp,
-      content: feelings
+  getWeather(baseURL, zipCode, apiKey)
+    .then((data) => {
+      postData('/data', {
+        currentDate: newDate,
+        temper: data.main.temp,
+        contentOfFeelings: feelings
+      });
+    })
+    .then(() => {
+      updateUI();
     });
-    updateUI(); // at the end of the file
-  });
 }
 
 // getting weather info from the API
 
-const getWeatherInfo = async (baseURL, zip, key) => {
+const getWeather = async (baseURL, zip, key) => {
   const res = await fetch(baseURL + zip + key);
 
   try {
@@ -63,14 +65,13 @@ const updateUI = async () => {
   const request = await fetch('/all');
   try {
     const allData = await request.json();
-    document.getElementById('date').innerHTML = `Date: ${newDate}`;
-    document.getElementById('temp').innerHTML = `Temperature: ${Math.round(
-      allData[0].temp - 273.15
-    )} &#x2103;`;
+    console.log(allData);
+    document.getElementById('date').innerHTML = `Date: ${allData.date}`;
     document.getElementById(
-      'content'
-    ).innerHTML = `I feel: ${allData[0].content}`;
-  } catch (error) {
-    console.log('error', error);
+      'temp'
+    ).innerHTML = `Temperature: ${allData.temp} &#x2103;`;
+    document.getElementById('content').innerHTML = `I feel: ${allData.content}`;
+  } catch (err) {
+    console.log('error', err);
   }
 };
