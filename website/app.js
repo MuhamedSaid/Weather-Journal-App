@@ -19,9 +19,9 @@ function generate(evt) {
   getWeather(baseURL, zipCode, apiKey)
     .then((data) => {
       postData('/data', {
-        currentDate: newDate,
-        temper: data.main.temp,
-        contentOfFeelings: feelings
+        date: newDate,
+        temp: data.main.temp,
+        content: feelings
       });
     })
     .then(() => {
@@ -44,16 +44,18 @@ const getWeather = async (baseURL, zip, key) => {
 
 // POSTING data
 const postData = async (url = '', data = {}) => {
+  console.log(data);
   const response = await fetch(url, {
     method: 'POST',
     credentials: 'same-origin',
     headers: {
-      'content-type': 'application/json'
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
   });
   try {
     const newData = await response.json();
+    console.log(newData);
     return newData;
   } catch (error) {
     console.log('error', error);
